@@ -1,0 +1,17 @@
+---
+title: "Milestone 6"
+author: "Molly Chiang"
+date: "4/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+
+```
+
+## R Markdown
+
+
