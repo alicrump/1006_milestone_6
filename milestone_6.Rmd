@@ -119,115 +119,27 @@ This paper by John Marshall uses data from the results of the 1947 high school l
 All analysis for this paper is available in my github repo.^[[Link to Github Repo](https://github.com/mollyechiang/1006_milestone_5)].
 
 
-
-
 ## Extension
 
 500 words about your proposed extension. You do not have to have done the extension yet. (That comes next week.) But it is time to start thinking about what your contribution to human knowledge will be. You seek admission to the School of Athens. What do you have to offer us?
 
 
-
-
 ## Appendix
 
 #### Replication Process
-A clear statement about what aspects of the paper you were able to replicate and which parts, if any, you were not able to replicate.
 
-I was able to replicate all of the figures in the paper in stata 
+I was able to replicate nearly all of the figures in the paper in stata. The code I ran and the output figures are included in the appendix. In terms of the tables, I was able to run all of the code in stata almost directly from Marshall's replication code (some aspects I had to change because some of the functions he used have been updated since he wrote the paper). However, I had a lot of trouble going from the raw results of the models Marshall ran to the polished tables I saw in his paper, as only code for the models were included in his .do file. Thus, I have included screenshots of the raw code and the relevant aspects of the output that would be included in the table in the paper. I hope to learn more basics of stata in order to compile and nicely display these raw outputs from Marshall's code.
+
+This paper relies heavily on rdrobust models, and the reference material for learning about this function and its package is from [@rdrobust].
 
 
+#### Figures 
 
-
-An Appendix in which you replicate all results — or all the important results — from your paper. As with other aspects of this project, the exact requirements will vary across students, depending on the complexity of your replication paper. If you paper only has 3 or 4 tables, we expect you to replicate it all. If it has 50 tables, we do not expect that. Use your best judgment and talk with us. You must replicate any result which you plan to use as the base of your extension.
-
-#### Original Table from Marshall 2015:
 <p>
 ![Original Table From Marshall 2015](image.png)
 </p>
 
-
-#### My Replication Table:
-
-```{r replication table models}
-
-# first create a dataframe of table that doesn't contail the year 1974 (bc no white, asian
-# or black values for that year)
-
-no_1974 <- table %>%
-  filter(year != 1974)
-
-# create rdrobust models for each of these variables compared to yearat14 just as 
-# Marshall 2015 did, using all of the c, p,q, kernel, h, and masspoint settings as
-# he did
-
-model1 <- rdrobust(table$year, table$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736, 
-                   masspoints = "off")
-model2 <- rdrobust(table$male, table$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736, 
-                   masspoints = "off")
-model3 <- rdrobust(no_1974$white, no_1974$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
-                   masspoints = "off")
-model4 <- rdrobust(no_1974$black, no_1974$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
-                   masspoints = "off")
-model5 <- rdrobust(no_1974$asian, no_1974$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
-                   masspoints = "off")
-model6 <- rdrobust(table$fathermanual, table$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
-                   masspoints = "off")
-
-# I couldn't figure out how to extract any of the variables except the coefficient 
-# result of the rdrobust call
-# but I created a tibble correlating each of those coefficients with their
-# corresponding variable
-
-replication_table <- data.frame(variable_used = c("Survey Year", "Male", "White", "Black", "Asian", "Father Manual"), 
-                            coef = c(as.data.frame(model1["coef"])[1,1], as.data.frame(model2["coef"])[1,1],
-                                     as.data.frame(model3["coef"])[1,1], as.data.frame(model4["coef"])[1,1],
-                                     as.data.frame(model5["coef"])[1,1], as.data.frame(model6["coef"])[1,1])) %>%
-                     spread(key = variable_used, value = coef)
-
-# label the row
-
-row.names(replication_table) <- "Post 1974 Reform"
-
-
-```
-
-```{r replication table}
-
-# I then piped the table to gt
-# I used gt to "pretty up" the table adding labels and such
-
-replication_table %>%
-  rownames_to_column() %>%
-  gt() %>%
-  
-  # add title
-  
-  tab_header(title = "Replication of Marshall Appendix Figure 6",
-             subtitle = "Results of regression discontinuity analysis between variables and yearat14") %>%
-  
-  # use only 3 decimal places
-  
-  fmt_number(columns = 1:7, decimals = 3) %>%
-  
-  # move the columns to the right order 
-  
-  cols_move_to_start("Survey Year") %>%
-  cols_move_to_end("Father Manual") %>%
-  cols_move(c("Male", "White"), "Survey Year") %>%
-  cols_move("Black", "White")
-
-# for some reason when I knit "Post 1974 Reforms" comes out twice, in the correct
-# location and in the value cell of the first column, after trying for over an
-# hour to fix this problem, it was time to submit. I am still unsure why this
-# is happening but if you run just this code chunk you will see the accurate
-# gt table output. Sorry about that!
-
-```
-
-
-In order to create this table rdrobust was used, and the reference material for learning about this package is from [@rdrobust].
-
-As you can see, the numbers do not match exactly, and I was not able to extract the standard error or number of observations from the rdrobust model. I hope to figure out why the values are different (maybe there was more data cleaning Marshall did that I missed when going through his code?) and how to extract some of the other values from the rdrobust model (it is unlike stan_glm or lm models that we have worked with in the past) for the next milestone.
+#### Tables
 
 
 \newpage 
