@@ -1,17 +1,244 @@
 ---
 title: "Milestone 6"
 author: "Molly Chiang"
-date: "4/1/2020"
-output: html_document
+date: "4/3/2020"
+output: pdf_document
+bibliography: bib.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
+library(rdrobust)
+library(gt)
+library(sjPlot)
 library(tidyverse)
+
+load("UK Election Data Replication.RData")
 
 ```
 
-## R Markdown
+## Grapic 
+Below is a beautiful graphic which uses the data from Marshall 2015 and is based on Figure 3 in the paper. I used inspiration/guidance from [@king] to create it. 
+ 
+```{r data for graphic}
+
+# first select only the relevant columns and years 
+# years 1925-1970 were used by Marshall in figure 3
+# year at 14 gives the cohort year, and con is the column
+# where 1 indicates voting conservative, and 0 is not
+
+x <- table %>%
+  select(yearat14, con) %>%
+  filter(yearat14 >= 1925 & yearat14 <= 1970)
+
+# in order to calculate the percentage of votes that were
+# conservative each year I made two tables
+
+# first I simply calculated the total number of individuals
+# that were surveyed each year
+
+num_per_year <- x %>%
+  group_by(yearat14) %>%
+  count()
+
+# then I coundted the number of conservative votes in
+# that year 
+
+num_con_per_year <- x %>%
+  group_by(yearat14) %>%
+  count(con) %>%
+  filter(con == 1)
+
+# then I used left join to combine these two tables by year
+# I replaced instances were the con or n.y (which was number
+# of conservative votes that were 1) column was NA with 0 
+# in order to include those instances in our calculations
+# then I created a proportion column by dividing n.y (number
+# of conservative votes) by n.x (number of voters per year)
+# for each year
+
+# I also split the table into two groups by creating a 
+# group column. The groups were created by splitting the
+# data about the year 1947, as was done in Figure 3 of 
+# Marshall 2015, in order to see how voting conservative 
+# changed after that year. 
+
+con_props <- left_join(num_per_year, num_con_per_year, by = "yearat14") %>%
+  replace_na(list(con = 0, n.y = 0)) %>%
+  summarize(con_prop = n.y/n.x) %>%
+  
+  # 1925-1947 is 23 years and 1947-1970 is 23 years
+  
+  mutate(group = c(rep("1", 23), rep("2", 23)))
+
+```
+
+```{r graphic}
+
+# here the graphic is created from the con_props data
+# with yearat14 as the x axis and proportion that voted
+# conservative as the y axis. The points were colored
+# by their group (which side of 1947 they were on)
+
+ggplot(con_props, aes(x = yearat14, y = con_prop, color = group)) + 
+  geom_point() +
+  
+  # I added a geom_vline at 1947 so the year would be 
+  # more obvious when looking at the graph
+  
+  geom_vline(xintercept = 1947) + 
+  
+  # I added best fit lines to each side of 1947
+  # method was set to loess  to get a polynomial
+  # fit for each group as was done in Figure 3 of
+  # Marshall 2015
+  
+  geom_smooth(se = FALSE, method = "loess") +
+  
+  # titles, labels, and caption was then added
+  
+  labs(title = "Proportion of Cohorts Voting Conservative Before and After 1947",
+       subtitle = "Modeled after Figure 3 from Marshall 2015",
+       x = "Cohort (year at age 14)",
+       y = "Proportion of Cohort Voting Conservative",
+       caption = "Figure 1: This figure illustrates the jump in proportion of a cohort, or class, of British individuals (classified by the year at \nwhich they were 14), after the education reform in 1947 which increased the year at which you could legally leave high \nschool from 14 to 15.") +
+  
+  # remove legend and right align caption
+  
+  theme(legend.position = "none",
+        plot.caption = element_text(hjust = 0))
+
+```
+
+
+## Overview of Replication Paper
+
+This paper by John Marshall uses data from the results of the 1947 high school leaving age reform in Great Britain, to analyze how additional years in high school affect political preferences [@main]. This paper looked specifically in how additional years in high school effected voting for the Conservative Party [@main]. In 1947, Great Britain changed the high school leaving age from 14 to 15, this induced almost half the student population to stay in school for at least 1 or 2 more years [@main]. Data from the 10 British elections between 1947 and 2010 was then used to compare voters young enough to have been effected by the reform to those who were too old to have been effected, using regression discontinuity [@main]. Regression discontinuity is usually used for determining if a program/treatment is effective, and essentially is is a pretest-posttest program-comparison group design strategy [@regression-discont]. Regression discontinuity is unique in that individuals are assigned to one of two groups, just based on if they are on either side of a pre-determined cut-off [@regression-discont].The results of data analysis revealed staying in high school for longer substantially increased likelihood to vote for the Conservative Party (staying one extra year increased probailitiy of voting Conservative by almost 12 percentage points) [@main]. This supports the previously studied fact that high school is extremely pertinent to political opinions later in life [@main]. In addition, this significant finding indicates the education reform of 1947 may have had an even greater affect on politics and election results nationwide over many years than ever expected [@main]. 
+
+All analysis for this paper is available in my github repo.^[[Link to Github Repo](https://github.com/mollyechiang/1006_milestone_5)].
+
+
+
+
+## Extension
+
+500 words about your proposed extension. You do not have to have done the extension yet. (That comes next week.) But it is time to start thinking about what your contribution to human knowledge will be. You seek admission to the School of Athens. What do you have to offer us?
+
+
+
+
+## Appendix
+
+#### Replication Process
+A clear statement about what aspects of the paper you were able to replicate and which parts, if any, you were not able to replicate.
+
+I was able to replicate all of the figures in the paper in stata 
+
+
+
+
+An Appendix in which you replicate all results — or all the important results — from your paper. As with other aspects of this project, the exact requirements will vary across students, depending on the complexity of your replication paper. If you paper only has 3 or 4 tables, we expect you to replicate it all. If it has 50 tables, we do not expect that. Use your best judgment and talk with us. You must replicate any result which you plan to use as the base of your extension.
+
+#### Original Table from Marshall 2015:
+<p>
+![Original Table From Marshall 2015](image.png)
+</p>
+
+
+#### My Replication Table:
+
+```{r replication table models}
+
+# first create a dataframe of table that doesn't contail the year 1974 (bc no white, asian
+# or black values for that year)
+
+no_1974 <- table %>%
+  filter(year != 1974)
+
+# create rdrobust models for each of these variables compared to yearat14 just as 
+# Marshall 2015 did, using all of the c, p,q, kernel, h, and masspoint settings as
+# he did
+
+model1 <- rdrobust(table$year, table$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736, 
+                   masspoints = "off")
+model2 <- rdrobust(table$male, table$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736, 
+                   masspoints = "off")
+model3 <- rdrobust(no_1974$white, no_1974$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
+                   masspoints = "off")
+model4 <- rdrobust(no_1974$black, no_1974$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
+                   masspoints = "off")
+model5 <- rdrobust(no_1974$asian, no_1974$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
+                   masspoints = "off")
+model6 <- rdrobust(table$fathermanual, table$yearat14, c = 1947, p = 1, q = 2, kernel = "tri", h = 14.736,
+                   masspoints = "off")
+
+# I couldn't figure out how to extract any of the variables except the coefficient 
+# result of the rdrobust call
+# but I created a tibble correlating each of those coefficients with their
+# corresponding variable
+
+replication_table <- data.frame(variable_used = c("Survey Year", "Male", "White", "Black", "Asian", "Father Manual"), 
+                            coef = c(as.data.frame(model1["coef"])[1,1], as.data.frame(model2["coef"])[1,1],
+                                     as.data.frame(model3["coef"])[1,1], as.data.frame(model4["coef"])[1,1],
+                                     as.data.frame(model5["coef"])[1,1], as.data.frame(model6["coef"])[1,1])) %>%
+                     spread(key = variable_used, value = coef)
+
+# label the row
+
+row.names(replication_table) <- "Post 1974 Reform"
+
+
+```
+
+```{r replication table}
+
+# I then piped the table to gt
+# I used gt to "pretty up" the table adding labels and such
+
+replication_table %>%
+  rownames_to_column() %>%
+  gt() %>%
+  
+  # add title
+  
+  tab_header(title = "Replication of Marshall Appendix Figure 6",
+             subtitle = "Results of regression discontinuity analysis between variables and yearat14") %>%
+  
+  # use only 3 decimal places
+  
+  fmt_number(columns = 1:7, decimals = 3) %>%
+  
+  # move the columns to the right order 
+  
+  cols_move_to_start("Survey Year") %>%
+  cols_move_to_end("Father Manual") %>%
+  cols_move(c("Male", "White"), "Survey Year") %>%
+  cols_move("Black", "White")
+
+# for some reason when I knit "Post 1974 Reforms" comes out twice, in the correct
+# location and in the value cell of the first column, after trying for over an
+# hour to fix this problem, it was time to submit. I am still unsure why this
+# is happening but if you run just this code chunk you will see the accurate
+# gt table output. Sorry about that!
+
+```
+
+
+In order to create this table rdrobust was used, and the reference material for learning about this package is from [@rdrobust].
+
+As you can see, the numbers do not match exactly, and I was not able to extract the standard error or number of observations from the rdrobust model. I hope to figure out why the values are different (maybe there was more data cleaning Marshall did that I missed when going through his code?) and how to extract some of the other values from the rdrobust model (it is unlike stan_glm or lm models that we have worked with in the past) for the next milestone.
+
+
+\newpage 
+
+## References
+
+Reference material to create this bibliography comes from [@bib]
+
+
+
+
+
 
 
