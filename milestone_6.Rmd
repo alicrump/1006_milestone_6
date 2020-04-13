@@ -1,5 +1,5 @@
 ---
-title: "Milestone 6"
+title: "Milestone 6.5"
 author: "Molly Chiang"
 date: "4/3/2020"
 output: pdf_document
@@ -20,7 +20,7 @@ load("raw-data/UK Election Data Replication.RData")
 
 ## Abstract
 
-Marshall (2015) shows the causal effect of additional years of schooling on voting conservative by using regression discontinuty analysis on voting records of individuals before and after the British 1947 school-leaving age reform. This extension of the paper aims to see if the same effect is found in an analysis of a later education reform in England.
+This is an extension of Marshall (2015), which shows the causal effect of additional years of schooling on voting conservative via regression discontinuty analysis on voting records of individuals before and after the British 1947 school-leaving age reform. This extension aims to see if the same effect is found in an analysis of a later education reform in England.
 
 
 ## Introduction
@@ -187,15 +187,21 @@ ggplot(con_props, aes(x = yearat14, y = con_prop, color = group)) +
 ![Marshall Figure 1 code](Code/figure1_code.png)
 </p>
 
+<p>
 ![Marshall Figure 2 code](Code/figure2_code.png)
+</p>
 
+<p>
 ![Marshall Figure 3 code](Code/figure3_code.png)
+</p>
 
+<p>
 ![Marshall Table 1 Code](Code/table1_code.png)
+</p>
 
+<p>
 ![Marshall Table 2 Code](Code/table2_code.png)
-
-![Marshall Table 3 Code](Code/table3_code.png)
+</p>
 
 \newpage 
 
