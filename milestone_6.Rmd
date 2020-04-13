@@ -18,6 +18,58 @@ load("raw-data/UK Election Data Replication.RData")
 
 ```
 
+## Abstract
+
+Marshall (2015) shows the causal effect of additional years of schooling on voting conservative by using regression discontinuty analysis on voting records of individuals before and after the British 1947 school-leaving age reform. This extension of the paper aims to see if the same effect is found in an analysis of a later education reform in England.
+
+All code and background information for this paper is available in my github repo.^[[Link to Github Repo](https://github.com/mollyechiang/1006_milestone_5)].
+
+## Introduction
+
+This paper by John Marshall uses data from the results of the 1947 high school leaving age reform in Great Britain, to analyze how additional years in high school affect political preferences [@main]. This paper looked specifically in how additional years in high school effected voting for the Conservative Party [@main]. In 1947, Great Britain changed the high school leaving age from 14 to 15, this induced almost half the student population to stay in school for at least 1 or 2 more years [@main]. Data from the 10 British elections between 1947 and 2010 was then used to compare voters young enough to have been effected by the reform to those who were too old to have been effected, using regression discontinuity [@main]. Regression discontinuity is usually used for determining if a program/treatment is effective, and essentially is is a pretest-posttest program-comparison group design strategy [@regression-discont]. Regression discontinuity is unique in that individuals are assigned to one of two groups, just based on if they are on either side of a pre-determined cut-off [@regression-discont].The results of data analysis revealed staying in high school for longer substantially increased likelihood to vote for the Conservative Party (staying one extra year increased probailitiy of voting Conservative by almost 12 percentage points) [@main]. This supports the previously studied fact that high school is extremely pertinent to political opinions later in life, 
+
+(could be two sentences and could have their own citations)
+
+and that more education generally leads to higher income and thus voting more conservative [@main]. In addition, this significant finding indicates the education reform of 1947 may have had an even greater affect on politics and election results nationwide over many years than ever expected [@main]. 
+
+
+
+
+The second paragraph provides more details on your replications. Mention that you used R, and provide an citation to R in your bibliography. (See citation().) Cite the location from which you got the data and code for your replication. (This might be to the Dataverse, a webpage or “personal communication” with the author.) Provide a footnote with a link to your repo.
+
+
+
+The third and fourth paragraphs are more flexible. Indeed, they might be only one paragraph or they might be several. What did you do? What did you find?
+
+The final paragraph is different between the introduction and the conclusion. In the introduction, it may not even exist! (We don’t want to be overly didactic here. There are many ways to write a great paper.) Or it may just provide a roadmap to the rest of the paper. In the conclusion, the last paragraph is where you get to speculate: What does it all mean? What should we research next?
+
+## Literature Review
+
+After the introduction, you will have a literature review, not dissimilar from the one in the paper you are replicating. (You do not get to assume that we have read the paper you are replicating. We haven’t. So, if something is worth understanding about the literature, then you need to tell us, and in your own words.) You also need to closely review any relevant literature that has come out since the paper was published. (We will take off points if a simple Google scholar search brings up a relevant article which you should have mentioned.) Of course, if a lot of time has passed and/or this is a particularly active area of research, there may be dozens of relevant articles. You can’t review them all. Pick the most important ones, especially those written by the same authors and/or using the same data and/or performing an analysis similar to your own extension.
+
+
+
+
+## Replication Process
+
+I was able to replicate nearly all of the figures in the paper in stata. The code I ran and the output figures are included in the appendix. In terms of the tables, I was able to run all of the code in stata almost directly from Marshall's replication code (some aspects I had to change because some of the functions he used have been updated since he wrote the paper). However, I had a lot of trouble going from the raw results of the models Marshall ran to the polished tables I saw in his paper, as only code for the models were included in his .do file. Thus, I have included screenshots of the raw code and the relevant aspects of the output that would be included in the table in the paper. I hope to learn more basics of stata in order to compile and nicely display these raw outputs from Marshall's code.
+
+For brevity, I did only included the screenshots from tables 1 and 2 and not table 3 (as it would be a lot of seperate screenshots to include), but I have included the table 3 code, which was run in the same way. Table 4 was not able to be replicated as there was no code for table 4 included in Marshall's replication code.
+
+Most coefficients exactly or almost exactly matched Marshall's published results. A few were a few decimal places off (potentially due to different iterations of the regression), and a even fewer were quite different, which still needs to be investigated.
+
+This paper relies heavily on rdrobust models, and the reference material for learning about this function and its package is from [@rdrobust].
+
+## Extension
+
+I believe there are two routes I could take with a proposed extension of the work in "Education and Voting Conservative: Evidence from a Major Schooling Reform in Great Britain" by John Marshall. 
+
+First, I could look at other factors that may have been influenced by the 1947 leaving age reform. This would involve doing a similar regression discontinuity analysis of other variables around the year 1947, but in R instead of stata. For example, did this reform lead to an uptick in college educated people? Or in another vein, how did the distribution of voting in all parties, liberal, labour, and conservative change after the reform, do we see a corresponding downtick in the other parties to go along with the observed uptick in conservative voting? In addition, I think that I could, using some of the adivce from RAOS, find more exciting/visually pleasing ways to display the results of these regression analyses. 
+
+On the other hand, I could use this data to look at the effect of other education reforms that have happened over the course of British history. There was a big education reform in England in 1988 [@wik]. This reform including introducing a national curriculum and corresponding national curriculum assesments, as well as modifying religious education [@wik]. Although this reform did not result in increased years of school (so it would not be able to be compared to Marshall's main findings in that way), I think it could be interesting if this reform in content and uniformity of the British public education had any effect on voting preferences of the first classes to appreciate this reform (just as Marshall analyzed those who first appreciated the 1947 reform). Again, there could be issues in that this reform required more instiutional changes than an easy age cut-off, and thus likely took longer to implement, but the results could still be interesting. In addition, the results could shed light on Marshall's finidings and if they are specifically correlated with more years in school, or are perhaps a response to government intervention via school reforms. 
+
+In addition to the 1988 education reform, the school leaving age was increased to 16 years of age in officially in 1996 [@wik]. This may pose an issue because Marshall's data only goes to 2010 (so we would have much more data on pre-reform individuals than post-reform indivudals), but would be very, very interesting addition to the findings of Marshall (2015), as it could really support the idea that additional years of school being associated with more conservative voting, if there was a similar uptick around this year. Additionally, if it did not show an uptick, it could show that perhaps Marshall discovered a unique effect of the 1947 British education reform, but not of more years of education in general.
+
 ## Grapic 
 Below is a beautiful graphic which uses the data from Marshall 2015 and is based on Figure 3 in the paper. I used inspiration/guidance from [@king] to create it. 
  
@@ -111,72 +163,40 @@ ggplot(con_props, aes(x = yearat14, y = con_prop, color = group)) +
 
 ```
 
-
-## Overview of Replication Paper
-
-All analysis for this paper is available in my github repo.^[[Link to Github Repo](https://github.com/mollyechiang/1006_milestone_5)].
-
-This paper by John Marshall uses data from the results of the 1947 high school leaving age reform in Great Britain, to analyze how additional years in high school affect political preferences [@main]. This paper looked specifically in how additional years in high school effected voting for the Conservative Party [@main]. In 1947, Great Britain changed the high school leaving age from 14 to 15, this induced almost half the student population to stay in school for at least 1 or 2 more years [@main]. Data from the 10 British elections between 1947 and 2010 was then used to compare voters young enough to have been effected by the reform to those who were too old to have been effected, using regression discontinuity [@main]. Regression discontinuity is usually used for determining if a program/treatment is effective, and essentially is is a pretest-posttest program-comparison group design strategy [@regression-discont]. Regression discontinuity is unique in that individuals are assigned to one of two groups, just based on if they are on either side of a pre-determined cut-off [@regression-discont].The results of data analysis revealed staying in high school for longer substantially increased likelihood to vote for the Conservative Party (staying one extra year increased probailitiy of voting Conservative by almost 12 percentage points) [@main]. This supports the previously studied fact that high school is extremely pertinent to political opinions later in life [@main]. In addition, this significant finding indicates the education reform of 1947 may have had an even greater affect on politics and election results nationwide over many years than ever expected [@main]. 
-
-
-## Extension
-
-I believe there are two routes I could take with a proposed extension of the work in "Education and Voting Conservative: Evidence from a Major Schooling Reform in Great Britain" by John Marshall. 
-
-First, I could look at other factors that may have been influenced by the 1947 leaving age reform. This would involve doing a similar regression discontinuity analysis of other variables around the year 1947, but in R instead of stata. For example, did this reform lead to an uptick in college educated people? Or in another vein, how did the distribution of voting in all parties, liberal, labour, and conservative change after the reform, do we see a corresponding downtick in the other parties to go along with the observed uptick in conservative voting? In addition, I think that I could, using some of the adivce from RAOS, find more exciting/visually pleasing ways to display the results of these regression analyses. 
-
-On the other hand, I could use this data to look at the effect of other education reforms that have happened over the course of British history. There was a big education reform in England in 1988 [@wik]. This reform including introducing a national curriculum and corresponding national curriculum assesments, as well as modifying religious education [@wik]. Although this reform did not result in increased years of school (so it would not be able to be compared to Marshall's main findings in that way), I think it could be interesting if this reform in content and uniformity of the British public education had any effect on voting preferences of the first classes to appreciate this reform (just as Marshall analyzed those who first appreciated the 1947 reform). Again, there could be issues in that this reform required more instiutional changes than an easy age cut-off, and thus likely took longer to implement, but the results could still be interesting. In addition, the results could shed light on Marshall's finidings and if they are specifically correlated with more years in school, or are perhaps a response to government intervention via school reforms. 
-
-In addition to the 1988 education reform, the school leaving age was increased to 16 years of age in officially in 1996 [@wik]. This may pose an issue because Marshall's data only goes to 2010 (so we would have much more data on pre-reform individuals than post-reform indivudals), but would be very, very interesting addition to the findings of Marshall (2015), as it could really support the idea that additional years of school being associated with more conservative voting, if there was a similar uptick around this year. Additionally, if it did not show an uptick, it could show that perhaps Marshall discovered a unique effect of the 1947 British education reform, but not of more years of education in general.
-
-
-## Replication Process
-
-I was able to replicate nearly all of the figures in the paper in stata. The code I ran and the output figures are included in the appendix. In terms of the tables, I was able to run all of the code in stata almost directly from Marshall's replication code (some aspects I had to change because some of the functions he used have been updated since he wrote the paper). However, I had a lot of trouble going from the raw results of the models Marshall ran to the polished tables I saw in his paper, as only code for the models were included in his .do file. Thus, I have included screenshots of the raw code and the relevant aspects of the output that would be included in the table in the paper. I hope to learn more basics of stata in order to compile and nicely display these raw outputs from Marshall's code.
-
-For brevity, I did only included the screenshots from tables 1 and 2 and not table 3 (as it would be a lot of seperate screenshots to include), but I have included the table 3 code, which was run in the same way. Table 4 was not able to be replicated as there was no code for table 4 included in Marshall's replication code.
-
-Most coefficients exactly or almost exactly matched Marshall's published results. A few were a few decimal places off (potentially due to different iterations of the regression), and a even fewer were quite different, which still needs to be investigated.
-
-This paper relies heavily on rdrobust models, and the reference material for learning about this function and its package is from [@rdrobust].
-
-## Appendix
+## Tables and Figures
 
 <p>
 ![Marshall Figure 1](Tables_and_Figures/Figure1.png)
 </p>
 
-![Marshall Figure 1 code](Code/figure1_code.png)
-
-\
-
 ![Marshall Figure 2](Tables_and_Figures/Figure2.png)
-
-
-
-![Marshall Figure 2 code](Code/figure2_code.png)
-
-\
 
 ![Marshall Figure 3](Tables_and_Figures/Figure3.png)
 
-
-![Marshall Figure 3 code](Code/figure3_code.png)
 
 ![Original Marshall Table 1](Tables_and_Figures/original_table1.png)
 
 ![Replicated Table 1](Tables_and_Figures/col1-4_table1.png) ![](Tables_and_Figures/col5-8_table1.png)
 
-![Marshall Table 1 Code](Code/table1_code.png)
-
 ![Original Marshall Table 2](Tables_and_Figures/original_table2.png)
 
 ![Replicated Table 2](Tables_and_Figures/table2.png)
 
+
+
+## Appendix (Code)
+
+![Marshall Figure 1 code](Code/figure1_code.png)
+
+![Marshall Figure 2 code](Code/figure2_code.png)
+
+![Marshall Figure 3 code](Code/figure3_code.png)
+
+![Marshall Table 1 Code](Code/table1_code.png)
+
 ![Marshall Table 2 Code](Code/table2_code.png)
 
 ![Marshall Table 3 Code](Code/table3_code.png)
-
 
 \newpage 
 
